@@ -1,1 +1,1 @@
-# TurboWieszcz
+# TurboWieszcz-Python
