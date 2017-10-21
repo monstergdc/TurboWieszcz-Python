@@ -252,11 +252,11 @@ class TurboWieszcz:
             exit
         if (newone):
             self.title_id = random.randint(0, len(self.titles)-1)
-        for z in range(self.zwrotek):
-            for w in range(4):
-                self.numer[w][z] = -1
-            self.ending[0][z] = random.randint(0, len(self.ENDINGS2)-1)
-            self.ending[1][z] = random.randint(0, len(self.ENDINGS1)-1)
+            for z in range(self.zwrotek):
+                for w in range(4):
+                    self.numer[w][z] = -1
+                self.ending[0][z] = random.randint(0, len(self.ENDINGS2)-1)
+                self.ending[1][z] = random.randint(0, len(self.ENDINGS1)-1)
         for z in range(self.zwrotek):
             self.setrndrow(z, 0)
             self.setrndrow(z, 1)
