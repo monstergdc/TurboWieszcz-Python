@@ -1,4 +1,5 @@
-﻿#! /usr/bin/env python
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
 
 # Turbo Wieszcz ++ Python version, v1.0
 # (c)2017 Noniewicz.com, Jakub Noniewicz
