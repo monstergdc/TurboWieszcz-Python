@@ -19,6 +19,7 @@
 
 
 import string, sys, random
+import xml.etree.ElementTree
 
 
 class TurboWieszcz:
@@ -60,7 +61,7 @@ class TurboWieszcz:
     ENDINGS2 = ['', '...', '', '!', '']
     TRYB2ORDER = [[0,1,2,3], [0,1,3,2], [0,2,1,3]] # ABAB, ABBA, AABB
 
-    data = [[0 for x in range(32)] for y in range(4)] # note: lame const!
+    data = [[0 for x in range(32)] for y in range(4)] # note: const! start with default 32 variations
 
 #///////////////////////////////////////////////
 #//po 10
@@ -224,7 +225,8 @@ class TurboWieszcz:
 
     def _set_random_row(self, z, w):
         while True:
-            self.number[w][z] = random.randint(0, 32-1)  # note: lame const!
+#            self.number[w][z] = random.randint(0, 32-1)  # note: lame const!
+            self.number[w][z] = random.randint(0, len(self.data[w])-1)
             if ((z == 0) or self._check_uniq_ok(z, w, self.number[w][z])):
                 break
 
@@ -270,20 +272,53 @@ class TurboWieszcz:
         for z in range(self.stanza_count):
             self.poem += self._build_stanza(z) + "\n"
 
+    def get_from_xml(self, xml_file):
+        if (xml_file == ""):
+            return
+        tt = list()
+        w1 = list()
+        w2 = list()
+        w3 = list()
+        w4 = list()
+        root = xml.etree.ElementTree.parse(xml_file).getroot()
+        for child in root:
+            for x in child.findall('dane'):
+                if (child.tag == "tytul"):
+                    tt.append(x.text)
+                if (child.tag == "wers1"):
+                    w1.append(x.text)
+                if (child.tag == "wers2"):
+                    w2.append(x.text)
+                if (child.tag == "wers3"):
+                    w3.append(x.text)
+                if (child.tag == "wers4"):
+                    w4.append(x.text)
+        if (len(tt) * len(w1) * len(w2) * len(w3) * len(w4) == 0):
+            raise ValueError('Supplied XML data seems invalid', len(tt), len(w1), len(w2), len(w3), len(w4)) 
+        self.titles = tt
+        self.data[0] = w1
+        self.data[1] = w2
+        self.data[2] = w3
+        self.data[3] = w4
+ #       print("DEBUG: done: %d/%d/%d/%d/%d\n" % (len(tt), len(w1), len(w2), len(w3), len(w4)))
+
+
 def main():
     random.seed()
     twobj = TurboWieszcz()
-
+ 
     if (len(sys.argv) >= 2):
-        twobj.set_count(int(sys.argv[1]))
+        twobj.get_from_xml(sys.argv[1])
     if (len(sys.argv) >= 3):
-        twobj.verse_mode = int(sys.argv[2])
+        twobj.set_count(int(sys.argv[2]))
     if (len(sys.argv) >= 4):
-        if (int(sys.argv[3]) == 0):
+        twobj.verse_mode = int(sys.argv[3])
+    if (len(sys.argv) >= 5):
+        if (int(sys.argv[4]) == 0):
             twobj.repetitions_ok = False
         else:
             twobj.repetitions_ok = True
-
+ 
     twobj.generate_poem()
     print(twobj.poem)
 
