@@ -18,5 +18,9 @@ note: there are also ZX Spectrum (ASM Z80) and Android (Java) versions
 * created: 20171021 22:00-23:05
 * updated: 20171021 23:40-23:59
 * updated: 20171022 00:00-01:10
+* updated: 20171023 19:00-21:00
+* updated: 20171023 21:30-22:00
+* updated: 20171024 14:55-15:45
+
 
 ## (c)2017 Noniewicz.com, Jakub Noniewicz

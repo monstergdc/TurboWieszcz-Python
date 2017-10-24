@@ -16,10 +16,14 @@
 # created: 20171021 22:00-23:05
 # updated: 20171021 23:40-23:59
 # updated: 20171022 00:00-01:10
+# updated: 20171023 19:00-21:00
+# updated: 20171023 21:30-22:00
+# updated: 20171024 14:55-15:45
 
 
 import string, sys, random
 import xml.etree.ElementTree
+import argparse
 
 
 class TurboWieszcz:
@@ -304,21 +308,19 @@ class TurboWieszcz:
 
 
 def main():
+    parser = argparse.ArgumentParser(description='TurboWiesz++ Python version, v1.0.', epilog='')
+    parser.add_argument('-x', '--xml',default='',metavar='xml',type=str,help='alternative source data file (XML)')
+    parser.add_argument('-c', '--count',default=4,metavar='count',type=int,help='verse count: >=1 numer of verses')
+    parser.add_argument('-m', '--mode',default=0,metavar='mode',type=int,help='verse mode: 0=ABAB, 1=ABBA, 2=AABB')
+    parser.add_argument('-r', '--repetitions',default=False,metavar='repetitions',help='repetitions OK: 0=no 1=yes')
+    xargs = parser.parse_args()
+
     random.seed()
     twobj = TurboWieszcz()
- 
-    if (len(sys.argv) >= 2):
-        twobj.get_from_xml(sys.argv[1])
-    if (len(sys.argv) >= 3):
-        twobj.set_count(int(sys.argv[2]))
-    if (len(sys.argv) >= 4):
-        twobj.verse_mode = int(sys.argv[3])
-    if (len(sys.argv) >= 5):
-        if (int(sys.argv[4]) == 0):
-            twobj.repetitions_ok = False
-        else:
-            twobj.repetitions_ok = True
- 
+    twobj.get_from_xml(xargs.xml)
+    twobj.set_count(xargs.count)
+    twobj.verse_mode = xargs.mode
+    twobj.repetitions_ok = xargs.repetitions
     twobj.generate_poem()
     print(twobj.poem)
 
