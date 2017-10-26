@@ -19,6 +19,7 @@
 # updated: 20171023 19:00-21:00
 # updated: 20171023 21:30-22:00
 # updated: 20171024 14:55-15:45
+# updated: 20171026 23:05-23:10
 
 
 import string, sys, random
@@ -267,11 +268,10 @@ class TurboWieszcz:
                 self.number[w][z] = -1
             self.ending[0][z] = random.randint(0, len(self.ENDINGS2)-1)
             self.ending[1][z] = random.randint(0, len(self.ENDINGS1)-1)
-            for z in range(self.stanza_count):
-                self._set_random_row(z, 0)
-                self._set_random_row(z, 1)
-                self._set_random_row(z, 2)
-                self._set_random_row(z, 3)
+            self._set_random_row(z, 0)
+            self._set_random_row(z, 1)
+            self._set_random_row(z, 2)
+            self._set_random_row(z, 3)
         self.poem = "\n " + self.titles[self.title_id]+ "\n\n"
         for z in range(self.stanza_count):
             self.poem += self._build_stanza(z) + "\n"
