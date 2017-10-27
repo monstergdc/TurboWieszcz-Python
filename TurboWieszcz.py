@@ -20,6 +20,7 @@
 # updated: 20171023 21:30-22:00
 # updated: 20171024 14:55-15:45
 # updated: 20171026 23:05-23:10
+# updated: 20171027 19:30-19:45
 
 
 import string, sys, random
@@ -217,13 +218,16 @@ class TurboWieszcz:
         if (new_stanza_count < 1):
             exit
         self.stanza_count = new_stanza_count
+        lstmin = [len(self.data[0]), len(self.data[1]), len(self.data[2]), len(self.data[3])]
+        if (self.stanza_count > min(lstmin)):
+            self.stanza_count = min(lstmin)
         self.number = [[0 for x in range(self.stanza_count)] for y in range(4)]
         self.ending = [[0 for x in range(self.stanza_count)] for y in range(2)]
 
     def _check_uniq_ok(self, z, w, value):
         ok = True
         if (not self.repetitions_ok):
-            for i in range(z):
+            for i in range(z-1):
                 if (self.number[w][i] == value):
                     ok = False
         return ok
