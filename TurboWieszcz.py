@@ -16,9 +16,16 @@
 # created: 20171021 22:00-23:05
 # updated: 20171021 23:40-23:59
 # updated: 20171022 00:00-01:10
+# updated: 20171023 19:00-21:00
+# updated: 20171023 21:30-22:00
+# updated: 20171024 14:55-15:45
+# updated: 20171026 23:05-23:10
+# updated: 20171027 19:30-19:45
 
 
 import string, sys, random
+import xml.etree.ElementTree
+import argparse
 
 
 class TurboWieszcz:
@@ -60,7 +67,7 @@ class TurboWieszcz:
     ENDINGS2 = ['', '...', '', '!', '']
     TRYB2ORDER = [[0,1,2,3], [0,1,3,2], [0,2,1,3]] # ABAB, ABBA, AABB
 
-    data = [[0 for x in range(32)] for y in range(4)] # note: lame const!
+    data = [[0 for x in range(32)] for y in range(4)] # note: const! start with default 32 variations
 
 #///////////////////////////////////////////////
 #//po 10
@@ -199,34 +206,40 @@ class TurboWieszcz:
     data[3][30] = 'Snują się dymy z ogniska'
     data[3][31] = 'To czarne lecą ptaszyska'
 
-    zwrotek = 4
-    powtorzeniaOk = False
-    tryb = 0
-    wiersz = ""
+    stanza_count = 4
+    repetitions_ok = False
+    verse_mode = 0
+    poem = ""
     title_id = 0
-    numer = [[0 for x in range(4)] for y in range(4)]
+    number = [[0 for x in range(4)] for y in range(4)]
     ending = [[0 for x in range(4)] for y in range(2)]
 
-    def setcount(self, newzwrotek):
-        self.zwrotek = newzwrotek
-        self.numer = [[0 for x in range(self.zwrotek)] for y in range(4)]
-        self.ending = [[0 for x in range(self.zwrotek)] for y in range(2)]
+    def set_count(self, new_stanza_count):
+        if (new_stanza_count < 1):
+            exit
+        self.stanza_count = new_stanza_count
+        lstmin = [len(self.data[0]), len(self.data[1]), len(self.data[2]), len(self.data[3])]
+        if (self.stanza_count > min(lstmin)):
+            self.stanza_count = min(lstmin)
+        self.number = [[0 for x in range(self.stanza_count)] for y in range(4)]
+        self.ending = [[0 for x in range(self.stanza_count)] for y in range(2)]
 
-    def checkUniqOK(self, z, w, value):
-        r = True
-        if (not self.powtorzeniaOk):
-            for i in range(z):
-                if (self.numer[w][i] == value):
-                    r = False
-        return r
+    def _check_uniq_ok(self, z, w, value):
+        ok = True
+        if (not self.repetitions_ok):
+            for i in range(z-1):
+                if (self.number[w][i] == value):
+                    ok = False
+        return ok
 
-    def setrndrow(self, z, w):
+    def _set_random_row(self, z, w):
         while True:
-            self.numer[w][z] = random.randint(0, 32-1)  # note: lame const!
-            if ((z == 0) or self.checkUniqOK(z, w, self.numer[w][z])):
+#            self.number[w][z] = random.randint(0, 32-1)  # note: lame const!
+            self.number[w][z] = random.randint(0, len(self.data[w])-1)
+            if ((z == 0) or self._check_uniq_ok(z, w, self.number[w][z])):
                 break
 
-    def koniec(self, z, w, s):
+    def _build_ending(self, z, w, s):
         chk = True
         if (len(s) > 0):
             if s[-1] in ['?', '!']:
@@ -238,60 +251,82 @@ class TurboWieszcz:
             result = self.ENDINGS1[self.ending[1][z]]
         return result
 
-    def strofa(self, z, w, w0):
-        s = self.data[w][self.numer[w][z]]
-        return ' ' + s + self.koniec(z, w0, s) + "\n"
+    def _build_line(self, z, w, w0):
+        s = self.data[w][self.number[w][z]]
+        return ' ' + s + self._build_ending(z, w0, s) + "\n"
 
-    def zwrotka(self, z):
+    def _build_stanza(self, z):
         return(
-          self.strofa(z, self.TRYB2ORDER[self.tryb][0], 0) + self.strofa(z, self.TRYB2ORDER[self.tryb][1], 1) +
-          self.strofa(z, self.TRYB2ORDER[self.tryb][2], 2) + self.strofa(z, self.TRYB2ORDER[self.tryb][3], 3)
+          self._build_line(z, self.TRYB2ORDER[self.verse_mode][0], 0) +
+          self._build_line(z, self.TRYB2ORDER[self.verse_mode][1], 1) +
+          self._build_line(z, self.TRYB2ORDER[self.verse_mode][2], 2) +
+          self._build_line(z, self.TRYB2ORDER[self.verse_mode][3], 3)
           )
 
-    def generuj(self, newone):
-        if (self.zwrotek < 1):
+    def generate_poem(self):
+        if (self.stanza_count < 1):
             exit
-        if (newone):
-            self.title_id = random.randint(0, len(self.titles)-1)
-            for z in range(self.zwrotek):
-                for w in range(4):
-                    self.numer[w][z] = -1
-                self.ending[0][z] = random.randint(0, len(self.ENDINGS2)-1)
-                self.ending[1][z] = random.randint(0, len(self.ENDINGS1)-1)
-        for z in range(self.zwrotek):
-            self.setrndrow(z, 0)
-            self.setrndrow(z, 1)
-            self.setrndrow(z, 2)
-            self.setrndrow(z, 3)
-        self.wiersz = "\n " + self.titles[self.title_id]+ " \n\n"
-        for z in range(self.zwrotek):
-            self.wiersz += self.zwrotka(z) + "\n"
+        self.title_id = random.randint(0, len(self.titles)-1)
+        for z in range(self.stanza_count):
+            for w in range(4):
+                self.number[w][z] = -1
+            self.ending[0][z] = random.randint(0, len(self.ENDINGS2)-1)
+            self.ending[1][z] = random.randint(0, len(self.ENDINGS1)-1)
+            self._set_random_row(z, 0)
+            self._set_random_row(z, 1)
+            self._set_random_row(z, 2)
+            self._set_random_row(z, 3)
+        self.poem = "\n " + self.titles[self.title_id]+ "\n\n"
+        for z in range(self.stanza_count):
+            self.poem += self._build_stanza(z) + "\n"
+
+    def get_from_xml(self, xml_file):
+        if (xml_file == ""):
+            return
+        tt = list()
+        w1 = list()
+        w2 = list()
+        w3 = list()
+        w4 = list()
+        root = xml.etree.ElementTree.parse(xml_file).getroot()
+        for child in root:
+            for x in child.findall('dane'):
+                if (child.tag == "tytul"):
+                    tt.append(x.text)
+                if (child.tag == "wers1"):
+                    w1.append(x.text)
+                if (child.tag == "wers2"):
+                    w2.append(x.text)
+                if (child.tag == "wers3"):
+                    w3.append(x.text)
+                if (child.tag == "wers4"):
+                    w4.append(x.text)
+        if (len(tt) * len(w1) * len(w2) * len(w3) * len(w4) == 0):
+            raise ValueError('Supplied XML data seems invalid', len(tt), len(w1), len(w2), len(w3), len(w4)) 
+        self.titles = tt
+        self.data[0] = w1
+        self.data[1] = w2
+        self.data[2] = w3
+        self.data[3] = w4
+ #       print("DEBUG: done: %d/%d/%d/%d/%d\n" % (len(tt), len(w1), len(w2), len(w3), len(w4)))
+
 
 def main():
+    parser = argparse.ArgumentParser(description='TurboWiesz++ Python version, v1.0.', epilog='')
+    parser.add_argument('-x', '--xml',default='',metavar='xml',type=str,help='alternative source data file (XML)')
+    parser.add_argument('-c', '--count',default=4,metavar='count',type=int,help='verse count: >=1 numer of verses')
+    parser.add_argument('-m', '--mode',default=0,metavar='mode',type=int,help='verse mode: 0=ABAB, 1=ABBA, 2=AABB')
+    parser.add_argument('-r', '--repetitions',default=False,metavar='repetitions',help='repetitions OK: 0=no 1=yes')
+    xargs = parser.parse_args()
+
     random.seed()
-
-    if (len(sys.argv) >= 2):
-        zwr = int(sys.argv[1])
-    else:
-        zwr = 4
-    if (len(sys.argv) >= 3):
-        tr = int(sys.argv[2])
-    else:
-        tr = 0
-    if (len(sys.argv) >= 4):
-        if (int(sys.argv[3]) == 0):
-            po = False
-        else:
-            po = True
-    else:
-        po = False
-
     twobj = TurboWieszcz()
-    twobj.setcount(zwr)
-    twobj.tryb = tr
-    twobj.powtorzeniaOk = po
-    twobj.generuj(True)
-    print(twobj.wiersz)
+    twobj.get_from_xml(xargs.xml)
+    twobj.set_count(xargs.count)
+    twobj.verse_mode = xargs.mode
+    twobj.repetitions_ok = xargs.repetitions
+    twobj.generate_poem()
+    print(twobj.poem)
 
 
 if __name__ == '__main__':
