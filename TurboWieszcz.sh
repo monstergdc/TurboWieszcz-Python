@@ -34,7 +34,7 @@ echo -n "Powtórzenia? T/n : "
 read powtok
 powtok=`interpret_bool $powtok`
 
-./TurboWieszcz.py $zwrotek $tryb $powtok
+./TurboWieszcz.py -c $zwrotek -m $tryb -r $powtok
 
 echo -n "Jeszcze raz? T/n : "
 read jeszcze
