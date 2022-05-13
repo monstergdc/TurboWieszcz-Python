@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Turbo Wieszcz ++ Python version, v1.0
-# (c)2017 Noniewicz.com, Jakub Noniewicz
+# (c)2017-2022 Noniewicz.com, Jakub Noniewicz
 #///////////////////////////////////////////////////////////////////////////////
 #// based directly on (translated from): previous version written for Windows in Delphi
 #// which was based directly on: previous version written for Commodore C-64 sometime in 1993
@@ -21,6 +21,7 @@
 # updated: 20171024 14:55-15:45
 # updated: 20171026 23:05-23:10
 # updated: 20171027 19:30-19:45
+# updated: 20220513 11:29-11:30
 
 
 import string, sys, random
@@ -102,7 +103,7 @@ class TurboWieszcz:
     data[0][28] = 'Gdy nie każdego stać na browary'
     data[0][29] = 'Pożarł Hilary swe okulary'
     data[0][30] = 'Spowiły nas trujące opary'
-    data[0][31] = 'To nie jest calka ani logarytm'
+    data[0][31] = 'To nie jest całka ani logarytm'
 #///////////////////////////////////////////////
 #//po 8
     data[1][0]  = 'Już na arenę krew tryska'
