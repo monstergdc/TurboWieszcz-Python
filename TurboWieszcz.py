@@ -22,6 +22,7 @@
 # updated: 20171026 23:05-23:10
 # updated: 20171027 19:30-19:45
 # updated: 20220513 11:29-11:30
+# updated: 20220903 18:55-
 
 
 import string, sys, random
@@ -266,7 +267,9 @@ class TurboWieszcz:
 
     def generate_poem(self):
         if (self.stanza_count < 1):
-            exit
+            raise ValueError('Invalid stanza count:', self.stanza_count)
+        if (self.verse_mode < 0) or (self.verse_mode > 2):
+            raise ValueError('Invalid verse mode:', self.verse_mode)
         self.title_id = random.randint(0, len(self.titles)-1)
         for z in range(self.stanza_count):
             for w in range(4):
@@ -313,7 +316,7 @@ class TurboWieszcz:
 
 
 def main():
-    parser = argparse.ArgumentParser(description='TurboWiesz++ Python version, v1.0.', epilog='')
+    parser = argparse.ArgumentParser(description='TurboWieszcz++ Python v1.0.', epilog='')
     parser.add_argument('-x', '--xml',default='',metavar='xml',type=str,help='alternative source data file (XML)')
     parser.add_argument('-c', '--count',default=4,metavar='count',type=int,help='verse count: >=1 numer of verses')
     parser.add_argument('-m', '--mode',default=0,metavar='mode',type=int,help='verse mode: 0=ABAB, 1=ABBA, 2=AABB')
