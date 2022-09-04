@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Turbo Wieszcz ++ Python version, v1.0
+# Turbo Wieszcz ++ Python version, v2.0
 # (c)2017-2022 Noniewicz.com, Jakub Noniewicz
 #///////////////////////////////////////////////////////////////////////////////
 #// based directly on (translated from): previous version written for Windows in Delphi
@@ -22,7 +22,7 @@
 # updated: 20171026 23:05-23:10
 # updated: 20171027 19:30-19:45
 # updated: 20220513 11:29-11:30
-# updated: 20220903 18:55-
+# updated: 20220903 18:55-19:00
 
 
 import string, sys, random
@@ -316,7 +316,7 @@ class TurboWieszcz:
 
 
 def main():
-    parser = argparse.ArgumentParser(description='TurboWieszcz++ Python v1.0.', epilog='')
+    parser = argparse.ArgumentParser(description='TurboWieszcz++ Python v2.0.', epilog='')
     parser.add_argument('-x', '--xml',default='',metavar='xml',type=str,help='alternative source data file (XML)')
     parser.add_argument('-c', '--count',default=4,metavar='count',type=int,help='verse count: >=1 numer of verses')
     parser.add_argument('-m', '--mode',default=0,metavar='mode',type=int,help='verse mode: 0=ABAB, 1=ABBA, 2=AABB')

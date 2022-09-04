@@ -1,4 +1,4 @@
-# Turbo Wieszcz ++ Python version, v1.0
+# Turbo Wieszcz ++ Python version
 
 A Polish poem generator.
 
